@@ -1,0 +1,20 @@
+.toggle-row input,
+.switch input {
+  display: block;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.toggle-row i,
+.switch i {
+  display: block;
+  flex: 0 0 42px;
+}
+
+.toggle-row input:focus-visible + i,
+.switch input:focus-visible + i {
+  outline: 3px solid rgba(126, 22, 40, .28);
+  outline-offset: 2px;
+}
