@@ -1,5 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-  <rect width="128" height="128" rx="32" fill="#7e1628"/>
-  <path d="M64 25c-12 19-28 36-28 54a28 28 0 0 0 56 0c0-18-16-35-28-54Z" fill="#fff7f0"/>
-  <path d="M49 82c2 8 9 13 17 13" fill="none" stroke="#e5a0a8" stroke-width="6" stroke-linecap="round"/>
+  <defs>
+    <linearGradient id="water" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d982a0"/>
+      <stop offset="1" stop-color="#a13e61"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="34" fill="url(#water)"/>
+  <circle cx="88" cy="35" r="17" fill="#f6eee2" opacity=".94"/>
+  <path d="M15 88c14-10 27-10 41 0s27 10 41 0 24-9 31-3v30H15Z" fill="#f0b3bf" opacity=".82"/>
+  <path d="M8 82c16-13 31-13 47 0s31 13 47 0 28-11 38-2" fill="none" stroke="#f7f4ea" stroke-width="5" stroke-linecap="round" opacity=".9"/>
+  <g transform="translate(91 31) rotate(10)" fill="#c9ee9f" stroke="#fff8fb" stroke-width="1.5">
+    <path d="M0 9C-15 5-15-8-7-9-2-10 0-5 0-2 0-5 3-10 8-9 16-7 14 6 0 9Z"/>
+    <path d="M0 9C15 5 15-8 7-9 2-10 0-5 0-2 0-5-3-10-8-9-16-7-14 6 0 9Z" transform="rotate(90)"/>
+  </g>
+  <text x="49" y="64" text-anchor="middle" fill="#f7f4ea" font-family="Georgia, serif" font-size="31" font-weight="700">Lu</text>
 </svg>

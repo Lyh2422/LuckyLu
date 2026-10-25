@@ -1,11 +1,11 @@
 {
-  "name": "绵绵 · 经期记录",
-  "short_name": "绵绵",
-  "description": "隐私优先的经期、症状与心情记录工具",
+  "name": "Lucky Lu",
+  "short_name": "Lucky Lu",
+  "description": "隐私优先的周期、症状与心情记录工具",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#f8f5f1",
-  "theme_color": "#7e1628",
+  "background_color": "#fbf5f6",
+  "theme_color": "#b44f70",
   "icons": [
     {
       "src": "icon.svg",

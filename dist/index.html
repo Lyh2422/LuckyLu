@@ -3,23 +3,49 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#7e1628">
-  <meta name="description" content="绵绵是一款隐私优先的经期、症状与心情记录工具。">
-  <title>绵绵 · 经期记录</title>
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="accessibility.css">
+  <meta name="theme-color" content="#b44f70">
+  <meta name="description" content="Lucky Lu 是一款隐私优先的经期、症状与心情记录工具。">
+  <title>Lucky Lu</title>
+  <link rel="manifest" href="manifest.webmanifest?v=10">
+  <link rel="icon" href="icon.svg?v=10" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css?v=10">
+  <link rel="stylesheet" href="accessibility.css?v=10">
+  <link rel="stylesheet" href="cloud.css?v=10">
 </head>
 <body>
   <div class="grain" aria-hidden="true"></div>
+  <section class="auth-gate" id="authGate" aria-label="登录 Lucky Lu">
+    <div class="auth-art" aria-hidden="true">
+      <span class="auth-moon">潞</span>
+      <i class="auth-orbit one"></i><i class="auth-orbit two"></i>
+      <p>沿着身体的潮汐<br>温柔地认识自己</p>
+    </div>
+    <div class="auth-card">
+      <div class="auth-brand"><span class="brand-mark">Lu</span><div><strong>Lucky Lu</strong></div></div>
+      <div class="auth-tabs" role="tablist"><button class="active" type="button" data-auth-tab="login">登录</button><button type="button" data-auth-tab="register">创建账号</button></div>
+      <form class="auth-form active" id="loginForm" data-auth-panel="login">
+        <label>账号<input id="loginUsername" name="username" autocomplete="username" required maxlength="32" placeholder="输入账号"></label>
+        <label>密码<input id="loginPassword" name="password" type="password" autocomplete="current-password" required minlength="10" placeholder="输入密码"></label>
+        <button class="primary-btn auth-submit" type="submit">进入 Lucky Lu</button>
+      </form>
+      <form class="auth-form" id="registerForm" data-auth-panel="register">
+        <label>怎么称呼你<input id="registerName" name="displayName" autocomplete="nickname" required maxlength="20" placeholder="昵称"></label>
+        <label>账号<input id="registerUsername" name="username" autocomplete="username" required minlength="3" maxlength="32" placeholder="中文、字母、数字或下划线"></label>
+        <label>密码<input id="registerPassword" name="password" type="password" autocomplete="new-password" required minlength="10" maxlength="128" placeholder="至少 10 位，请妥善保存"></label>
+        <label>部署访问码（如已设置）<input id="registerSignupCode" name="signupCode" type="password" autocomplete="off" maxlength="128" placeholder="由服务器管理员提供"></label>
+        <button class="primary-btn auth-submit" type="submit">创建我的私密空间</button>
+      </form>
+      <p class="auth-error" id="authError" role="alert"></p>
+    </div>
+  </section>
   <header class="topbar">
-    <a class="brand" href="#today" aria-label="绵绵首页">
-      <span class="brand-mark">绵</span>
-      <span><strong>绵绵</strong><small>照顾身体，也照顾心情</small></span>
+    <a class="brand" href="#today" aria-label="Lucky Lu 首页">
+      <span class="brand-mark">Lu</span>
+      <span><strong>Lucky Lu</strong><small>沿着身体的潮汐</small></span>
     </a>
     <div class="top-actions">
-      <span class="privacy-pill"><span></span> 数据仅存本机</span>
+      <span class="privacy-pill" id="syncIndicator"><span></span> 安全连接中</span>
+      <button class="account-chip" id="accountButton" type="button" aria-label="打开账户设置"><span id="accountInitial">潞</span><b id="accountName">我的</b></button>
       <button class="icon-btn" id="settingsButton" aria-label="打开设置" title="设置">⚙</button>
     </div>
   </header>
@@ -28,8 +54,8 @@
     <section class="hero view active" id="todayView" data-view="today">
       <div class="hero-copy">
         <p class="eyebrow" id="greeting">晚上好</p>
-        <h1 id="heroTitle">听听身体<br><em>今天想说什么</em></h1>
-        <p class="hero-subtitle" id="heroSubtitle">先记录一次经期，绵绵会为你预测下一个周期。</p>
+        <h1 id="heroTitle">潞潞，听听身体<br><em>今天想说什么</em></h1>
+        <p class="hero-subtitle" id="heroSubtitle">先记下一次经期，月汐会慢慢读懂你的节奏。</p>
         <div class="hero-actions">
           <button class="primary-btn" data-open-log><span>＋</span> 记录今天</button>
           <button class="text-btn" data-nav="calendar">查看日历 <span>↗</span></button>
@@ -50,78 +76,112 @@
             <small id="cycleCaption">你的节奏，由你定义</small>
           </div>
         </div>
-        <span class="float-note note-one">慢一点也没关系</span>
-        <span class="float-note note-two">♥ 好好休息</span>
+        <span class="float-note note-one">像水一样，慢一点</span>
+        <span class="float-note note-two">○ 今夜好好休息</span>
       </div>
+    </section>
+
+    <section class="phase-strip view active" data-view="today" aria-label="本周期概览">
+      <article><span class="phase-icon">◌</span><div><small>今日阶段</small><strong id="todayPhase">等待记录</strong><p id="todayPhaseHint">记录经期后生成周期阶段</p></div></article>
+      <article><span class="phase-icon sparkle">✦</span><div><small>预测可信度</small><strong id="predictionConfidence">待积累</strong><p id="predictionRange">完整记录越多，范围越清晰</p></div></article>
     </section>
 
     <section class="snapshot view active" data-view="today">
       <div class="section-heading">
-        <div><p class="eyebrow">TODAY'S CHECK-IN</p><h2>今天，身体还好吗？</h2></div>
+        <div><p class="eyebrow">LULU'S DAILY TIDE</p><h2>潞潞，今天身体还好吗？</h2></div>
         <p id="todayDate"></p>
       </div>
       <div class="checkin-grid">
         <button class="checkin-card" data-quick="flow"><span class="card-icon drop">◒</span><span><small>经量</small><strong id="todayFlow">未记录</strong></span><b>＋</b></button>
+        <button class="checkin-card" data-quick="pain"><span class="card-icon pain">⌁</span><span><small>疼痛</small><strong id="todayPain">未记录</strong></span><b>＋</b></button>
         <button class="checkin-card" data-quick="symptoms"><span class="card-icon spark">✣</span><span><small>症状</small><strong id="todaySymptoms">感觉如何？</strong></span><b>＋</b></button>
         <button class="checkin-card" data-quick="mood"><span class="card-icon smile">⌣</span><span><small>心情</small><strong id="todayMood">记下此刻</strong></span><b>＋</b></button>
+        <button class="checkin-card" data-quick="sleep"><span class="card-icon sleep">☾</span><span><small>睡眠</small><strong id="todaySleep">未记录</strong></span><b>＋</b></button>
         <button class="checkin-card" data-quick="note"><span class="card-icon note">〰</span><span><small>小记</small><strong id="todayNote">留一句话</strong></span><b>＋</b></button>
       </div>
     </section>
 
     <section class="insight-strip view active" data-view="today">
-      <div class="insight-main"><span>✦</span><div><small>绵绵提示</small><p id="dailyInsight">规律不是标准答案，记录是为了更了解自己，而不是给身体打分。</p></div></div>
+      <div class="insight-main"><span>≈</span><div><p id="dailyInsight">规律不是标准答案，记录是为了更了解自己，而不是给身体打分。</p></div></div>
       <button data-nav="insights">看看我的趋势 →</button>
     </section>
 
     <section class="panel view" id="calendarView" data-view="calendar">
       <div class="section-heading calendar-heading">
-        <div><p class="eyebrow">MY RHYTHM</p><h2>周期日历</h2></div>
+        <div><p class="eyebrow">LULU'S MOON CALENDAR</p><h2>月汐日历</h2></div>
         <div class="month-switch"><button id="prevMonth" aria-label="上个月">←</button><strong id="monthTitle"></strong><button id="nextMonth" aria-label="下个月">→</button></div>
       </div>
       <div class="calendar-card">
         <div class="week-row"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div>
         <div class="calendar-grid" id="calendarGrid"></div>
-        <div class="legend"><span><i class="period-dot"></i>经期</span><span><i class="predict-dot"></i>预测经期</span><span><i class="ovulation-dot"></i>易孕期（估算）</span><span><i class="log-dot"></i>有记录</span></div>
+        <div class="legend"><span><i class="period-dot"></i>经期</span><span><i class="predict-dot"></i>预测经期</span><span><i class="log-dot"></i>有记录</span></div>
       </div>
       <div class="calendar-side">
         <article><small>下次经期预计</small><strong id="nextPeriodDate">等待记录</strong><p id="nextPeriodHint">记录至少一次经期开始日后显示</p></article>
-        <article><small>周期设置</small><strong><span id="settingCycle">28</span> 天</strong><p>可在设置中按自己的情况调整</p></article>
+        <article><small>当前周期</small><strong><span id="settingCycle">28</span> 天</strong><p id="currentCycleHint">可在设置中按自己的情况调整</p></article>
+        <article><small>预测可信度</small><strong id="calendarConfidence">待积累</strong><p id="calendarConfidenceHint">至少记录 2 个完整周期</p></article>
       </div>
     </section>
 
     <section class="panel view" id="insightsView" data-view="insights">
       <div class="section-heading">
-        <div><p class="eyebrow">GENTLE INSIGHTS</p><h2>身体的节奏</h2></div>
-        <p>依据你的本机记录生成</p>
+        <div><p class="eyebrow">LULU'S TIDAL NOTES</p><h2>身体的节奏</h2></div>
+        <p>依据你的云端记录生成</p>
       </div>
       <div class="metric-grid">
         <article><small>平均周期</small><strong id="avgCycle">—</strong><span>天</span><p id="cycleRegularity">需要 2 次经期记录</p></article>
         <article><small>平均经期</small><strong id="avgPeriod">—</strong><span>天</span><p>只统计已标记的经期日</p></article>
         <article><small>记录天数</small><strong id="loggedDays">0</strong><span>天</span><p>每一次觉察都值得被记住</p></article>
+        <article><small>预测可信度</small><strong class="metric-word" id="insightConfidence">—</strong><p id="insightConfidenceHint">从完整周期中学习</p></article>
       </div>
       <div class="trend-grid">
         <article class="chart-card"><div class="card-title"><div><small>近 6 个周期</small><h3>周期长度</h3></div><span>天数</span></div><div class="bar-chart" id="cycleChart"></div></article>
         <article class="chart-card"><div class="card-title"><div><small>近 30 天</small><h3>常见症状</h3></div></div><div class="symptom-list" id="symptomStats"><p class="empty-state">记录症状后，这里会出现趋势。</p></div></article>
       </div>
-      <div class="medical-note"><span>i</span><p><strong>请把预测当作参考</strong> 周期会受压力、睡眠、用药等多种因素影响。本工具不用于避孕、诊断或替代医生建议；如有异常疼痛、大量出血或持续不适，请及时就医。</p></div>
+      <div class="insight-lower">
+        <article class="chart-card history-card"><div class="card-title"><div><small>最近 6 次</small><h3>周期历史</h3></div><span>开始日 · 经期 · 周期</span></div><div class="cycle-history" id="cycleHistory"><p class="empty-state">记录经期后，这里会整理每次周期。</p></div></article>
+        <article class="chart-card care-card"><div class="card-title"><div><small>仅作健康观察</small><h3>值得留意</h3></div></div><div class="care-signals" id="careSignals"></div></article>
+      </div>
     </section>
 
     <section class="panel view" id="settingsView" data-view="settings">
-      <div class="section-heading"><div><p class="eyebrow">MAKE IT YOURS</p><h2>我的设置</h2></div></div>
+      <div class="section-heading"><div><p class="eyebrow">MADE FOR LULU</p><h2>月汐设置</h2></div></div>
       <div class="settings-grid">
         <form class="settings-card" id="profileForm">
           <h3>周期偏好</h3>
-          <label>昵称<input id="nicknameInput" maxlength="12" placeholder="她的昵称"></label>
+          <label>昵称<input id="nicknameInput" maxlength="12" placeholder="潞潞"></label>
           <div class="field-row"><label>平均周期（天）<input id="cycleLengthInput" type="number" min="15" max="60"></label><label>经期天数<input id="periodLengthInput" type="number" min="1" max="14"></label></div>
+          <label>提前提醒（天）<input id="reminderDaysInput" type="number" min="1" max="7"></label>
           <label class="toggle-row"><span><strong>经期前提醒</strong><small>在首页提前显示温柔提醒</small></span><input id="reminderToggle" type="checkbox" aria-label="经期前提醒"><i></i></label>
           <button class="primary-btn small" type="submit">保存设置</button>
         </form>
+        <article class="settings-card cloud-card">
+          <div class="card-kicker">ACCOUNT</div><h3>账号与空间</h3>
+          <div class="account-summary"><span id="settingsAvatar">潞</span><div><strong id="settingsAccountName">—</strong><small id="settingsUsername">—</small></div><em id="settingsRole">—</em></div>
+          <label id="spacePickerLabel">正在查看<select id="spacePicker"></select></label>
+          <p class="privacy-copy" id="spacePermissionHint">正在读取权限……</p>
+          <button class="secondary-btn" id="logoutButton" type="button">退出登录</button>
+        </article>
+        <article class="settings-card cloud-card" id="sharingCard">
+          <div class="card-kicker">TOGETHER</div><h3>共享给信任的人</h3>
+          <p class="privacy-copy">邀请链接仅能使用一次，7 天后失效。你可以随时移除对方。</p>
+          <label>对方权限<select id="inviteRole"><option value="viewer">只读查看</option><option value="editor">可以记录和修改</option></select></label>
+          <button class="primary-btn small" id="createInviteButton" type="button">生成一次性邀请</button>
+          <div class="invite-result" id="inviteResult" hidden><label>邀请链接<input id="inviteLink" readonly></label><button class="secondary-btn" id="copyInviteButton" type="button">复制链接</button></div>
+          <div class="member-list" id="memberList"></div>
+        </article>
+        <article class="settings-card cloud-card">
+          <div class="card-kicker">INVITATION</div><h3>加入共享空间</h3>
+          <p class="privacy-copy">收到邀请链接时，打开链接并登录即可；也可以在这里粘贴邀请码。</p>
+          <label>邀请码<input id="inviteCodeInput" autocomplete="off" placeholder="粘贴邀请码或完整链接"></label>
+          <button class="secondary-btn" id="acceptInviteButton" type="button">加入共享空间</button>
+        </article>
         <article class="settings-card">
           <h3>数据与隐私</h3>
-          <p class="privacy-copy">所有记录都保存在这台设备的浏览器中，不会上传到服务器。更换设备或清理浏览器前，请先导出备份。</p>
-          <div class="stack-actions"><button class="secondary-btn" id="exportButton">导出数据备份</button><label class="secondary-btn file-btn">导入备份<input type="file" id="importInput" accept="application/json"></label><button class="danger-btn" id="clearButton">清除本机全部数据</button></div>
+          <p class="privacy-copy">记录存放在你的私有服务器，退出登录后浏览器不会保留云端记录副本。部署时必须启用 HTTPS，并定期备份服务器数据卷。</p>
+          <div class="stack-actions"><button class="secondary-btn" id="exportButton">导出数据备份</button><label class="secondary-btn file-btn">导入备份<input type="file" id="importInput" accept="application/json"></label><button class="secondary-btn" id="migrateButton" hidden>迁移旧版本机记录</button><button class="danger-btn" id="clearButton">清空当前空间记录</button></div>
         </article>
-        <article class="settings-card about-card"><span class="brand-mark big">绵</span><div><h3>关于绵绵</h3><p>一件安静的小工具。希望她每次打开，都能感到身体被认真听见。</p><small>v1.0 · 可离线使用</small></div></article>
+        <article class="settings-card about-card"><span class="brand-mark big">Lu</span><div><h3>Lucky Lu</h3><p>愿每一次打开，都像月光落在水面——身体被听见，心情也有地方停靠。</p><small>v2.2 · 私有云同步</small></div></article>
       </div>
     </section>
   </main>
@@ -139,14 +199,16 @@
       <div class="sheet-head"><div><p class="eyebrow">DAILY LOG</p><h2>听听今天的身体</h2></div><button class="close-btn" value="cancel" aria-label="关闭">×</button></div>
       <label class="date-label">记录日期 <input type="date" id="logDate"></label>
       <div class="form-section"><div class="form-title"><h3>今天在经期吗？</h3><label class="switch"><input type="checkbox" id="periodToggle" aria-label="今天在经期"><i></i></label></div><div id="flowSection" class="conditional"><p>经量</p><div class="choice-row" data-group="flow"><button type="button" data-value="少量">少量</button><button type="button" data-value="中等">中等</button><button type="button" data-value="较多">较多</button><button type="button" data-value="点滴">点滴</button></div></div></div>
-      <div class="form-section"><h3>有什么症状？</h3><div class="chip-grid" id="symptomChoices"><button type="button" data-value="痛经">痛经</button><button type="button" data-value="腰酸">腰酸</button><button type="button" data-value="头痛">头痛</button><button type="button" data-value="乳房胀痛">乳房胀痛</button><button type="button" data-value="长痘">长痘</button><button type="button" data-value="疲惫">疲惫</button><button type="button" data-value="腹胀">腹胀</button><button type="button" data-value="失眠">失眠</button></div></div>
-      <div class="form-section"><h3>此刻的心情</h3><div class="mood-row" id="moodChoices"><button type="button" data-value="开心"><span>◡</span>开心</button><button type="button" data-value="平静"><span>—</span>平静</button><button type="button" data-value="低落"><span>⌢</span>低落</button><button type="button" data-value="烦躁"><span>⌁</span>烦躁</button><button type="button" data-value="敏感"><span>·</span>敏感</button></div></div>
+      <div class="form-section" id="painSection"><h3>疼痛程度</h3><div class="choice-row pain-choices" data-group="pain"><button type="button" data-value="0">无</button><button type="button" data-value="1">轻微</button><button type="button" data-value="2">明显</button><button type="button" data-value="3">严重</button></div></div>
+      <div class="form-section"><h3>有什么症状？</h3><div class="chip-grid" id="symptomChoices"><button type="button" data-value="痛经">痛经</button><button type="button" data-value="腰酸">腰酸</button><button type="button" data-value="头痛">头痛</button><button type="button" data-value="长痘">长痘</button><button type="button" data-value="疲惫">疲惫</button><button type="button" data-value="腹胀">腹胀</button><button type="button" data-value="失眠">失眠</button><button type="button" data-value="恶心">恶心</button><button type="button" data-value="腹泻">腹泻</button><button type="button" data-value="食欲变化">食欲变化</button><button type="button" data-value="水肿">水肿</button></div></div>
+      <div class="form-section"><h3>此刻的心情</h3><div class="mood-row" id="moodChoices"><button type="button" data-value="开心"><span>◡</span>开心</button><button type="button" data-value="平静"><span>—</span>平静</button><button type="button" data-value="低落"><span>⌢</span>低落</button><button type="button" data-value="烦躁"><span>⌁</span>烦躁</button><button type="button" data-value="敏感"><span>·</span>敏感</button><button type="button" data-value="焦虑"><span>∿</span>焦虑</button></div></div>
+      <div class="form-section" id="sleepSection"><h3>昨晚睡得怎么样？</h3><div class="choice-row" data-group="sleep"><button type="button" data-value="很差">很差</button><button type="button" data-value="一般">一般</button><button type="button" data-value="不错">不错</button><button type="button" data-value="很好">很好</button></div></div>
       <div class="form-section"><h3>给自己留句话</h3><textarea id="noteInput" rows="3" maxlength="200" placeholder="今天发生了什么？身体有什么感受……"></textarea></div>
       <div class="sheet-actions"><button type="button" class="danger-link" id="deleteLogButton">删除当天记录</button><button type="submit" class="primary-btn">保存这一天</button></div>
     </form>
   </dialog>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="app.js"></script>
+  <script src="app.js?v=10"></script>
 </body>
 </html>
