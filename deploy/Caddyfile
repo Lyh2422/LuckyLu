@@ -1,0 +1,8 @@
+{$DOMAIN:luckylu.top} {
+  encode zstd gzip
+  reverse_proxy lulu-tide:3000
+
+  header {
+    Strict-Transport-Security "max-age=31536000; includeSubDomains"
+  }
+}

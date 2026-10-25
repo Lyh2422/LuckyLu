@@ -1,0 +1,39 @@
+services:
+  lulu-tide:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      PORT: 3000
+      HOST: 0.0.0.0
+      DATA_DIR: /app/data
+      COOKIE_SECURE: 1
+      TRUST_PROXY: 1
+      SESSION_DAYS: 30
+      SIGNUP_CODE: ${SIGNUP_CODE}
+    volumes:
+      - ../data:/app/data
+    ports:
+      - "127.0.0.1:3000:3000"
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      lulu-tide:
+        condition: service_healthy
+    environment:
+      DOMAIN: ${DOMAIN:-luckylu.top}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:

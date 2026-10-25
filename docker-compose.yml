@@ -1,0 +1,19 @@
+services:
+  lulu-tide:
+    build: .
+    restart: unless-stopped
+    environment:
+      PORT: 3000
+      HOST: 0.0.0.0
+      DATA_DIR: /app/data
+      COOKIE_SECURE: 1
+      TRUST_PROXY: 1
+      SESSION_DAYS: 30
+      SIGNUP_CODE: ${SIGNUP_CODE:-}
+    volumes:
+      - lulu_tide_data:/app/data
+    ports:
+      - "127.0.0.1:3000:3000"
+
+volumes:
+  lulu_tide_data:
