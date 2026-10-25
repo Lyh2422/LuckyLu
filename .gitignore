@@ -1,0 +1,9 @@
+node_modules/
+data/*.sqlite*
+deploy/*.sqlite*
+.env
+.DS_Store
+coverage/
+test-data/
+test-results/
+dist/.vercel/

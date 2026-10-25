@@ -1,0 +1,18 @@
+{
+  "name": "lulu-tide",
+  "version": "2.2.0",
+  "private": true,
+  "description": "Lucky Lu · 可自托管的私密周期记录工具",
+  "type": "module",
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning src/server.js",
+    "dev": "NODE_ENV=development node --watch --disable-warning=ExperimentalWarning src/server.js",
+    "test": "node --test --disable-warning=ExperimentalWarning"
+  },
+  "dependencies": {
+    "express": "5.1.0"
+  }
+}
